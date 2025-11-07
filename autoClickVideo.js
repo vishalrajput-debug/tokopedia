@@ -8,11 +8,20 @@ const URL = "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shir
 
 async function openAndPlayVideo() {
   console.log("🚀 Launching browser...");
-  const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: null,
-    args: ["--start-maximized"]
-  });
+const browser = await puppeteer.launch({
+  headless: "new", // Puppeteer recommends this for headless mode
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-accelerated-2d-canvas",
+    "--no-first-run",
+    "--no-zygote",
+    "--single-process",
+    "--disable-gpu"
+  ]
+});
+
   const page = await browser.newPage();
 
   try {
