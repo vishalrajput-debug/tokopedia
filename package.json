@@ -1,7 +1,7 @@
 {
   "name": "tokopedia-automation",
   "version": "1.0.0",
-  "description": "Automated Puppeteer script for Tokopedia video testing",
+  "description": "Tokopedia Puppeteer automation",
   "main": "autoClickVideo.js",
   "type": "commonjs",
   "scripts": {
@@ -9,10 +9,10 @@
     "postinstall": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
-    "puppeteer": "^24.0.0",
+    "chromium": "^3.0.3",
+    "puppeteer": "^24.29.1",
     "puppeteer-core": "^24.0.0",
-    "chromium": "^3.0.2"
-  },
-  "author": "Vishal Rajput",
-  "license": "ISC"
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
 }
