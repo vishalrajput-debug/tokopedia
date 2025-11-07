@@ -8,11 +8,23 @@ const URL = "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shir
 
 async function openAndPlayVideo() {
   console.log("🚀 Launching browser...");
+
   const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: null,
-    args: ["--start-maximized"]
-  });
+  headless: false, // keep visible for debugging locally
+  defaultViewport: null,
+  args: [
+    '--start-maximized',
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--ignore-certificate-errors',
+    '--disable-features=IsolateOrigins,site-per-process',
+    '--disable-http2', // ✅ <— the key flag that fixes ERR_HTTP2_PROTOCOL_ERROR
+    '--disable-web-security'
+  ]
+});
+
   const page = await browser.newPage();
 
   try {
@@ -38,7 +50,7 @@ async function openAndPlayVideo() {
 
     // Wait for video player to appear
     console.log("⏳ Waiting for the video player to load...");
-    await delay(4000);
+    await delay(5000);
 
     // Check if video element exists
     const videoExists = await page.evaluate(() => !!document.querySelector('video'));
@@ -51,8 +63,8 @@ async function openAndPlayVideo() {
   } catch (err) {
     console.error("💥 Error during automation:", err.message);
   } finally {
-    console.log("🕐 Keeping browser open for 8 seconds before closing...");
-    await delay(37000);
+    console.log("🕐 Keeping browser open for 10 seconds before closing...");
+    await delay(10000);
     await browser.close();
     console.log("✅ Done!");
   }

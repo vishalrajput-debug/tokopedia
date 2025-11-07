@@ -1,19 +1,16 @@
 {
   "name": "tokopedia-automation",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "Automated Puppeteer script for Tokopedia video testing",
+  "main": "autoClickVideo.js",
   "type": "commonjs",
-  "dependencies": {
-    "puppeteer": "^24.29.1"
-  },
   "scripts": {
-  "start": "node autoClickVideo.js"
-}
+    "start": "node autoClickVideo.js",
+    "postinstall": "npx puppeteer browsers install chrome"
+  },
+  "dependencies": {
+    "puppeteer": "^24.0.0"
+  },
+  "author": "Vishal Rajput",
+  "license": "ISC"
 }
