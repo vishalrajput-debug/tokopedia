@@ -1,45 +1,30 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
+const puppeteer = require('puppeteer-core');
+const chromium = require('chromium');
 const path = require('path');
 
 const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-const URL =
-  "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shirt-kaos-boxy-fit-with-cotton-combed-24s-dengan-200-gsm-1730148724140508744?aff_unique_id=VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D&channel=salinlink&source=TTS&utm_source=salinlink&utm_medium=affiliate-share&utm_campaign=affiliateshare-pdp-VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D-1730148724140508744-0-041125&scene=pdp&chain_key=%7B%22t%22%3A1%2C%22k%22%3A%22000000000000000007568802845060974343%22%2C%22sc%22%3A%22salinlink%22%7D";
-
-async function findChromePath() {
-  const baseDir = '/opt/render/.cache/puppeteer/chrome';
-  try {
-    const versions = fs.readdirSync(baseDir);
-    if (versions.length > 0) {
-      const chromePath = path.join(baseDir, versions[0], 'chrome-linux64', 'chrome');
-      console.log(`🧭 Detected Chrome at: ${chromePath}`);
-      return chromePath;
-    }
-  } catch (e) {
-    console.warn('⚠️ Chrome not found in cache, Puppeteer will use default.');
-  }
-  return null;
-}
+const URL = "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shirt-kaos-boxy-fit-with-cotton-combed-24s-dengan-200-gsm-1730148724140508744?aff_unique_id=VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D&channel=salinlink&source=TTS&utm_source=salinlink&utm_medium=affiliate-share&utm_campaign=affiliateshare-pdp-VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D-1730148724140508744-0-041125&scene=pdp&chain_key=%7B%22t%22%3A1%2C%22k%22%3A%22000000000000000007568802845060974343%22%2C%22sc%22%3A%22salinlink%22%7D";
 
 async function openAndPlayVideo() {
   console.log("🚀 Launching browser...");
 
-  const chromePath = await findChromePath();
+  const executablePath = chromium.path || '/usr/bin/chromium-browser';
+  console.log(`🧭 Using Chrome path: ${executablePath}`);
 
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: chromePath || undefined,
+    executablePath,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
       '--ignore-certificate-errors',
-      '--disable-features=IsolateOrigins,site-per-process',
       '--disable-http2',
+      '--disable-features=IsolateOrigins,site-per-process',
       '--disable-web-security'
-    ],
+    ]
   });
 
   const page = await browser.newPage();
@@ -74,7 +59,7 @@ async function openAndPlayVideo() {
     console.error("💥 Error:", err.message);
   } finally {
     console.log("🕐 Closing browser...");
-    await delay(10000);
+    await delay(400000);
     await browser.close();
     console.log("✅ Done!");
   }

@@ -4,11 +4,11 @@
   "description": "Automated Puppeteer script for Tokopedia video testing",
   "main": "autoClickVideo.js",
   "scripts": {
-    "start": "node autoClickVideo.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "start": "node autoClickVideo.js"
   },
   "dependencies": {
-    "puppeteer": "^24.0.0"
+    "puppeteer-core": "^24.0.0",
+    "chromium": "^3.0.2"
   },
   "author": "Vishal Rajput",
   "license": "ISC"
