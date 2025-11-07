@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Automated Puppeteer script for Tokopedia video testing",
   "main": "autoClickVideo.js",
-  "type": "commonjs",
   "scripts": {
     "start": "node autoClickVideo.js",
     "postinstall": "npx puppeteer browsers install chrome"
