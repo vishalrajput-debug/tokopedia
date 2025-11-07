@@ -9,7 +9,7 @@ const URL = "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shir
 async function openAndPlayVideo() {
   console.log("🚀 Launching browser...");
 const browser = await puppeteer.launch({
-  headless: "new", // Puppeteer recommends this for headless mode
+  headless: "new",
   args: [
     "--no-sandbox",
     "--disable-setuid-sandbox",
@@ -21,12 +21,17 @@ const browser = await puppeteer.launch({
     "--disable-gpu"
   ]
 });
+ browser = await puppeteer.launch({
+  executablePath: process.env.CHROME_PATH || undefined,
+  headless: "new",
+  args: ["--no-sandbox", "--disable-setuid-sandbox"]
+});
 
   const page = await browser.newPage();
 
   try {
     console.log(`🌐 Navigating to: ${URL}`);
-    await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 90000 });
+    await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 120000 });
 
     console.log("⏳ Waiting for thumbnails to load...");
     await page.waitForSelector('[data-testid="PDPImageThumbnail"]', { timeout: 30000 });
