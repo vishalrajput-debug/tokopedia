@@ -8,24 +8,19 @@ const URL = "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shir
 
 async function openAndPlayVideo() {
   console.log("🚀 Launching browser...");
-const browser = await puppeteer.launch({
-  headless: "new",
-  args: [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-accelerated-2d-canvas",
-    "--no-first-run",
-    "--no-zygote",
-    "--single-process",
-    "--disable-gpu"
-  ]
-});
- browser = await puppeteer.launch({
-  executablePath: process.env.CHROME_PATH || undefined,
-  headless: "new",
-  args: ["--no-sandbox", "--disable-setuid-sandbox"]
-});
+  const browser = await puppeteer.launch({
+    headless: "new", // headless mode for Render
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-accelerated-2d-canvas",
+      "--no-first-run",
+      "--no-zygote",
+      "--single-process",
+      "--disable-gpu"
+    ]
+  });
 
   const page = await browser.newPage();
 
@@ -36,11 +31,9 @@ const browser = await puppeteer.launch({
     console.log("⏳ Waiting for thumbnails to load...");
     await page.waitForSelector('[data-testid="PDPImageThumbnail"]', { timeout: 30000 });
 
-    // Debug: count thumbnails
     const count = await page.$$eval('[data-testid="PDPImageThumbnail"]', els => els.length);
     console.log(`🖼️ Found ${count} thumbnail buttons.`);
 
-    // Click the 2nd button (index 1), which is the video
     console.log("🎥 Clicking the video thumbnail (second button)...");
     await page.evaluate(() => {
       const buttons = document.querySelectorAll('[data-testid="PDPImageThumbnail"]');
@@ -50,11 +43,9 @@ const browser = await puppeteer.launch({
       }
     });
 
-    // Wait for video player to appear
     console.log("⏳ Waiting for the video player to load...");
     await delay(4000);
 
-    // Check if video element exists
     const videoExists = await page.evaluate(() => !!document.querySelector('video'));
     if (videoExists) {
       console.log("🎬 Video player detected and should be playing now!");
@@ -65,7 +56,7 @@ const browser = await puppeteer.launch({
   } catch (err) {
     console.error("💥 Error during automation:", err.message);
   } finally {
-    console.log("🕐 Keeping browser open for 8 seconds before closing...");
+    console.log("🕐 Keeping browser open for 40 seconds before closing...");
     await delay(40000);
     await browser.close();
     console.log("✅ Done!");
