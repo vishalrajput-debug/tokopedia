@@ -6,7 +6,7 @@
     "start": "node autoClickVideo.js"
   },
   "dependencies": {
-    "puppeteer": "^23.0.0",
-    "express": "^4.19.0"
+    "express": "^4.19.0",
+    "puppeteer": "^23.3.0"
   }
 }
