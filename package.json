@@ -1,18 +1,12 @@
 {
-  "name": "tokopedia-automation",
+  "name": "tokopedia-puppeteer",
   "version": "1.0.0",
-  "description": "Tokopedia Puppeteer automation",
-  "main": "autoClickVideo.js",
-  "type": "commonjs",
+  "main": "index.js",
   "scripts": {
-    "start": "node autoClickVideo.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "start": "node index.js"
   },
   "dependencies": {
-    "chromium": "^3.0.3",
-    "puppeteer": "^24.29.1",
-    "puppeteer-core": "^24.0.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "puppeteer": "^23.0.0",
+    "express": "^4.19.0"
   }
 }

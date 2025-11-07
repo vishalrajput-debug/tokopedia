@@ -52,7 +52,7 @@ async function openAndPlayVideo() {
     console.error("💥 Error during automation:", err.message);
   } finally {
     console.log("🕐 Keeping browser open for 8 seconds before closing...");
-    await delay(8000);
+    await delay(40000);
     await browser.close();
     console.log("✅ Done!");
   }
