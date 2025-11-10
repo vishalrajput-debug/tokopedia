@@ -1,0 +1,25 @@
+{
+  "name": "tokopedia-puppeteer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node autoClickVideo.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "puppeteer": "^23.11.1"
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nagmaSiddiqui/opsad.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nagmaSiddiqui/opsad/issues"
+  },
+  "homepage": "https://github.com/nagmaSiddiqui/opsad#readme"
+}
