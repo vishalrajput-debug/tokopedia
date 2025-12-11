@@ -76,7 +76,7 @@ app.get("/run", async (req, res) => {
 
     await browser.close();
     return res.json({ success: true, screenshot: "video-frame.png" });
-
+    
 
   } catch (err) {
     console.error(err);
@@ -84,7 +84,5 @@ app.get("/run", async (req, res) => {
   }
 });
 
-app.get("/video-frame.png", (req, res) => {
-  res.sendFile(path.join(__dirname, "video-frame.png"));
-});
+
 app.listen(10000, () => console.log("Server running on port 10000"));
