@@ -1,0 +1,8 @@
+{
+  "name": "puppeteer-click",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^5.2.1",
+    "puppeteer": "^22.0.0"
+  }
+}
