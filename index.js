@@ -13,7 +13,7 @@ app.get("/run", async (req, res) => {
       process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium";
 
     const browser = await puppeteer.launch({
-      headless: "shell", // better than true on Render
+      headless: "shell", // More stable on Render
       executablePath: chromiumPath,
       args: [
         "--no-sandbox",
@@ -30,7 +30,7 @@ app.get("/run", async (req, res) => {
 
     const page = await browser.newPage();
 
-    // Avoid Tokopedia bot-blocking
+    // Fake genuine browser
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
         "AppleWebKit/537.36 (KHTML, like Gecko) " +
@@ -45,53 +45,69 @@ app.get("/run", async (req, res) => {
 
     // Product URL
     const URL =
-      "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shirt-kaos-boxy-fit-with-cotton-combed-24s-dengan-200-gsm-1730148724140508744?aff_unique_id=VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D&channel=salinlink&utm_source=salinlink";
+      "https://www.tokopedia.com/mybasicindonesia/mybasic-boxy-crop-t-shirt-kaos-boxy-fit-with-cotton-combed-24s-dengan-200-gsm-1730148724140508744?aff_unique_id=VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D&channel=salinlink&source=TTS&utm_source=salinlink&utm_medium=affiliate-share&utm_campaign=affiliateshare-pdp-VjgEBL2zYnXL9eFz0aWzIN1oSniFGHGALE1N5Mw8U16eHJBvAjrak6GGqx_hX6eSBcZLIwS6BZD6PKurTuTXMdU5vNkJafm6WA%3D%3D-1730148724140508744-0-041125&scene=pdp&chain_key=%7B%22t%22%3A1%2C%22k%22%3A%22000000000000000007568802845060974343%22%2C%22sc%22%3A%22salinlink%22%7D";
 
     console.log("Loading page...");
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     console.log("Page loaded!");
 
     // ======================================================
-    //   IMPROVED VIDEO THUMBNAIL HANDLING (Multiple fallback)
+    //   PATCHED VIDEO THUMBNAIL HANDLING FOR RENDER
     // ======================================================
 
     const selectors = [
+      "button[data-testid='PDPImageThumbnail'] img.playIcon",
       "button[data-testid='PDPImageThumbnail'] .playIcon",
       "button[data-testid='PDPImageThumbnail'] img[src*='play']",
-      "div[data-testid='PDPImageThumbnail'] img[src*='play']",
-      "img[src*='play']",
-      "button[aria-label='Putar Video']"
+      "img.playIcon",
+      "img[src*='play']"
     ];
 
     console.log("Looking for video thumbnail...");
 
-    let foundSelector = null;
+    let selected = null;
 
+    // Try each selector for up to 4 seconds each
     for (const sel of selectors) {
       try {
-        await page.waitForSelector(sel, { timeout: 3000 });
-        foundSelector = sel;
+        await page.waitForSelector(sel, { timeout: 4000 });
+        selected = sel;
         break;
       } catch (_) {}
     }
 
-    if (!foundSelector) {
+    if (!selected) {
       throw new Error("❌ Video thumbnail not found on Render");
     }
 
-    console.log("Video thumbnail found:", foundSelector);
+    console.log("Video thumbnail detected:", selected);
 
-    await page.click(foundSelector);
-    console.log("Video clicked!");
+    // Manual DOM click = 100× more reliable on slow systems
+    const clickSuccess = await page.evaluate((sel) => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
 
-    console.log("Waiting for video to start...");
+      const btn = el.closest("button");
+      if (!btn) return false;
+
+      btn.click();
+      return true;
+    }, selected);
+
+    if (!clickSuccess) {
+      throw new Error("❌ Click failed — play icon exists but could not click");
+    }
+
+    console.log("Video clicked! Waiting for playback...");
+
+    // Extra wait on Render
     await new Promise((r) => setTimeout(r, 4000));
 
     // Wait for video tag
     await page.waitForSelector("video", { timeout: 15000 });
     console.log("Video element detected!");
 
-    // Take screenshot
+    // Take screenshot (first frame)
     const screenshotPath = path.join(__dirname, "video-frame.png");
 
     await page.screenshot({
@@ -100,7 +116,7 @@ app.get("/run", async (req, res) => {
       fullPage: false
     });
 
-    console.log("Screenshot captured:", screenshotPath);
+    console.log("Screenshot saved:", screenshotPath);
 
     await browser.close();
 
@@ -108,6 +124,7 @@ app.get("/run", async (req, res) => {
       success: true,
       screenshot: "video-frame.png"
     });
+
   } catch (err) {
     console.error(err);
     return res.json({ success: false, error: err.message });
